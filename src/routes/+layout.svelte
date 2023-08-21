@@ -1,7 +1,9 @@
 <script>
-    import '$core/styles/index.css'
+	import { Sidebar } from '$components';
+	import '$core/styles/index.css';
 </script>
 
 <div class="flex bg-slate-700 text-white">
-    <slot></slot>
+	<Sidebar />
+	<slot />
 </div>

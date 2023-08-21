@@ -53,5 +53,4 @@ export class TrieTree {
 
 		return words
 	}
-
 }
