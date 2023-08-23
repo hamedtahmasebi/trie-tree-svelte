@@ -3,7 +3,9 @@
 	import '$core/styles/index.css';
 </script>
 
-<div class="flex bg-slate-700 text-white">
+<div class="flex flex-col lg:flex-row bg-slate-700 text-white">
 	<Sidebar />
-	<slot />
+	<div class="px-4">
+		<slot />
+	</div>
 </div>

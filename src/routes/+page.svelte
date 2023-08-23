@@ -64,7 +64,7 @@
 				{/each}
 			</div>
 			<div class="p-3">
-				<h3 class="text-xl font-medium">List of inserted words</h3>
+				<h3 class="text-xl font-medium">inserted</h3>
 				<div class="grid">
 					{#each inserted as word}
 						<div class="flex gap-2">
