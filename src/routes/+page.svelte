@@ -1,10 +1,12 @@
 <script lang="ts">
+	import Tree from '$components/tree.svelte';
 	import { TrieTree } from '$lib/search-indexer';
 	const tree = new TrieTree();
 
 	let inserted: string[] = [];
 	let suggestions: string[];
 
+	$: treeRoot = tree.root;
 	$: inserted = [];
 	$: newWord = '';
 	$: suggestions = [];
@@ -12,6 +14,7 @@
 		tree.insert(newWord);
 		inserted = [...inserted, newWord];
 		newWord = '';
+		treeRoot = tree.root;
 	};
 
 	$: changeHandler = (str: string) => {
@@ -22,6 +25,14 @@
 		let searchResult = tree.search(str);
 		console.log({ searchResult });
 		suggestions = searchResult;
+	};
+
+	$: removeHandler = (word: string) => {
+		{
+			tree.remove(word);
+			inserted = inserted.filter((w) => w !== word);
+			treeRoot = tree.root;
+		}
 	};
 </script>
 
@@ -65,14 +76,11 @@
 			</div>
 			<div class="p-3">
 				<h3 class="text-xl font-medium">inserted</h3>
-				<div class="grid">
+				<div class="grid gap-y-1">
 					{#each inserted as word}
 						<div class="flex gap-2">
 							<button
-								on:click={() => {
-									tree.remove(word);
-									inserted = inserted.filter((w) => w !== word);
-								}}
+								on:click={() => removeHandler(word)}
 								class="border hover:border-red-500 px-3 py-1 flex gap-2 items-center rounded-lg"
 							>
 								<span>
@@ -96,5 +104,10 @@
 				</div>
 			</div>
 		</div>
+		{#if tree.root}
+			<div class="mt-10">
+				<Tree bind:treeRoot />
+			</div>
+		{/if}
 	</div>
 </div>
