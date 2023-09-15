@@ -1,10 +1,11 @@
 <script lang="ts">
+	export let treeRoot: TrieNode;
 	const PADDING_Y = 25;
 	const NODE_RADIUS = 15;
 
-	import type { TrieNode, TrieTree } from '$lib';
-	export let treeRoot: TrieNode;
+	import type { TrieNode } from '$lib';
 	import { tree, hierarchy, type HierarchyNode, type HierarchyLink, linkVertical } from 'd3';
+	import { onMount } from 'svelte';
 
 	type Node = { val: string; isEndOfWord: boolean; children: Node[] };
 	const adapter = (tn: TrieNode) => {
@@ -34,12 +35,23 @@
 	$: links = root.links();
 
 	$: nodes = root.descendants();
-	let width = 550;
+
+	$: height = (root.height + 3) * NODE_RADIUS * 2 + PADDING_Y;
+	let container: SVGElement;
+	$: width = 500;
+	onMount(() => {
+		width = container.clientWidth;
+		window.addEventListener('resize', (e) => {
+			width = container.clientWidth;
+		});
+	});
+
+	$: console.log(root.height);
 </script>
 
 <div>
 	<h2 class="text-2xl text-center">Tree Visual</h2>
-	<svg class="w-full" height={(root.height + 1) * NODE_RADIUS * 2 + PADDING_Y}>
+	<svg class="w-full" bind:this={container} {height}>
 		{#each links as l}
 			<path
 				d={linkVertical()({
