@@ -36,17 +36,21 @@
 
 	$: nodes = root.descendants();
 
-	$: height = (root.height + 3) * NODE_RADIUS * 2 + PADDING_Y;
+	$: height = (root.height + 1) * (NODE_RADIUS + PADDING_Y) + PADDING_Y;
 	let container: SVGElement;
 	$: width = 500;
-	onMount(() => {
-		width = container.clientWidth;
-		window.addEventListener('resize', (e) => {
-			width = container.clientWidth;
-		});
-	});
 
-	$: console.log(root.height);
+	function resizeHandler() {
+		width = container.clientWidth;
+	}
+
+	onMount(() => {
+		resizeHandler();
+		window.addEventListener('resize', resizeHandler);
+		return () => {
+			window.removeEventListener('resize', resizeHandler);
+		};
+	});
 </script>
 
 <div>
@@ -73,16 +77,6 @@
 </div>
 
 <style>
-	.container {
-		border: 1px solid chocolate;
-		min-width: 400px;
-		height: 400px;
-	}
-
-	.bar {
-		fill: blueviolet;
-	}
-
 	path {
 		fill: none;
 		stroke: white;
