@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 export class TrieNode {
 	constructor(
 		public children: Record<string, TrieNode> = {},
@@ -36,20 +37,31 @@ export class TrieTree {
 
 	remove(word: string) {
 		let currNode = this.root;
-
+		const path: TrieNode[] = [];
 		for (const char of word) {
 			currNode = currNode.children[char];
+			path.push(currNode);
 		}
 
-		// TODO: Improve this, we're not really removing anything we're just disabling the word
-		currNode.isEndOfWord = false;
+		if (!isEmpty(currNode.children)) {
+			currNode.isEndOfWord = false;
+			return;
+		}
+
+		for (let i = path.length - 1; i >= 0; i--) {
+			const currNode = path[i];
+			if (isEmpty(currNode.children) && i > 0) {
+				const parentNode = path[i - 1];
+				delete parentNode.children[word[i]];
+				if (parentNode.isEndOfWord) break;
+			}
+		}
 	}
 
 	getAllChildWords(node: TrieNode): string[] {
 		const words: string[] = [];
 		function walk(nodeRecord: TrieNode, words: string[], wordPathStr: string) {
 			if (nodeRecord.isEndOfWord) {
-				console.log(`Found: ${wordPathStr}`);
 				words.push(wordPathStr);
 			}
 			for (const char in nodeRecord.children) {
@@ -58,8 +70,6 @@ export class TrieTree {
 		}
 
 		walk(node, words, '');
-
-		console.log(words);
 
 		return words;
 	}
