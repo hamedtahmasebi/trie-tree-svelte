@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 
 	type Node = { val: string; isEndOfWord: boolean; children: Node[] };
+
 	const adapter = (tn: TrieNode) => {
 		const node: Node = { val: '', children: [], isEndOfWord: false };
 		const scrapeChildren = (n: TrieNode, k: string): Node => {
